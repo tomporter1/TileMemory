@@ -1,0 +1,46 @@
+{
+	"statTypes": [
+    {
+      "name": "BestTime",
+      "label": "Best Time",
+      "playerPrefName": "best",
+      "dataType": "Float"
+    },
+    {
+      "name": "AverageTime",
+      "label": "Average Time",
+      "playerPrefName": "average",
+      "dataType": "Float"
+    },
+    {
+      "name": "TimesPlayed",
+      "label": "Number of times played",
+      "playerPrefName": "best",
+      "dataType": "Int"
+    }
+	],
+  "modes": [
+    {
+      "modeName": "Easy",
+      "playerPrefSuffix": "easy"
+    },
+    {
+      "modeName": "Medium",
+      "playerPrefSuffix": "medium"
+    },
+    {
+      "modeName": "Hard",
+      "playerPrefSuffix": "hard"
+    }
+  ],
+  "statTypeDefaults": [
+    {
+      "type": "Float",
+      "value": 0
+    },
+    {
+      "type": "Int",
+      "value": 0
+    }
+  ]
+}

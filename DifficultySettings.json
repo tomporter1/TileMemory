@@ -1,0 +1,28 @@
+{
+    "difficulty": [
+        {
+            "name": "Easy",
+            "xSize": 2,
+            "ySize": 3,
+            "showTime": 3
+        },
+        {
+            "name": "Medium",
+            "xSize": 3,
+            "ySize": 4,
+            "showTime": 3
+        },
+        {
+            "name": "Hard",
+            "xSize": 4,
+            "ySize": 5,
+            "showTime": 3
+        },
+        {
+            "name": "Custom",
+            "xSize": 6,
+            "ySize": 8,
+            "showTime": 3
+        }
+    ]
+}
