@@ -11,7 +11,7 @@ public class StatObject : MonoBehaviour
 
     internal void SetData(StatType stat, Difficulty SelectedDifficulty)
     {
-        _label.text = stat.Name + ":";
+        _label.text = stat.Label + ":";
 
         if (stat.DataType == statTypesEnum.Int)
             _data.text = PlayerPrefs.GetInt(StatManager.GenerateStatKey(stat, SelectedDifficulty)).ToString();
