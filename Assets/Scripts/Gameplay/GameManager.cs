@@ -28,6 +28,18 @@ public class GameManager : MonoBehaviour
     public static DifficultySettingsData difficultySettingsData;
 
     private Customplayerpref customSettingInfo;
+
+    public static PanelManager _panelManager;
+    private static PanelManager panelManager
+    {
+        get
+        {
+            if (_panelManager == null)
+                _panelManager = FindObjectOfType<PanelManager>();
+            return _panelManager;
+        }
+    }
+
     void Start()
     {
         Countdown.onCountdownEnd.AddListener(EnableBoard);
@@ -39,13 +51,16 @@ public class GameManager : MonoBehaviour
 
         customSettingInfo = difficultySettingsData.Difficulties.CustomPlayerPref;
         if (!PlayerPrefs.HasKey(customSettingInfo.Col.Name))
+        {
             PlayerPrefs.SetInt(customSettingInfo.Col.Name, customSettingInfo.Col.InitialValue);
+        }
         if (!PlayerPrefs.HasKey(customSettingInfo.Row.Name))
+        {
             PlayerPrefs.SetInt(customSettingInfo.Row.Name, customSettingInfo.Row.InitialValue);
+        }
 
-        Difficulty currentGameDifficulty = GameDifficulty.gameDifficulty.GetCurrentGameDifficulty();
+        Difficulty currentGameDifficulty = GameDifficulty.instance.GetCurrentGameDifficulty();
         onGameStart.Invoke(GetDifficultyInfo(currentGameDifficulty));
-        DontDestroyOnLoadManager.RemoveObj(GameDifficulty.gameDifficulty.gameObject);
     }
 
     public void StartGame(DifficultyInfo _difficulty)
@@ -72,26 +87,36 @@ public class GameManager : MonoBehaviour
         }
         return null;
     }
+
     private void Reset()
     {
         allTiles = new List<Tile>();
 
         foreach (Transform tile in _board.transform)
         {
-            GameObject.Destroy(tile.gameObject);
+            Destroy(tile.gameObject);
         }
     }
+
     internal DifficultyInfo GetDifficultyInfo(Difficulty difficulty)
-    { return difficultySettingsData.GetDifficultyInfo(difficulty); }
+    {
+        return difficultySettingsData.GetDifficultyInfo(difficulty);
+    }
 
     internal void SetTiles(List<Tile> newTiles)
-    { allTiles = newTiles; }
+    {
+        allTiles = newTiles;
+    }
 
     private void EnableBoard()
-    { _board.GetComponent<ShowBoard>().ShowBoardForSecs(currentDifficulty.ShowTime); }
+    {
+        _board.GetComponent<ShowBoard>().ShowBoardForSecs(currentDifficulty.ShowTime);
+    }
 
     internal IEnumerable<Tile> GetAllTiles()
-    { return allTiles; }
+    {
+        return allTiles;
+    }
 
     internal Difficulty GetCurrentGameDifficulty()
     {
@@ -109,9 +134,13 @@ public class GameManager : MonoBehaviour
                 string key = StatManager.GenerateStatKey(stat, mode.ModeName);
                 if (!PlayerPrefs.HasKey(key))
                     if (stat.DataType == statTypesEnum.Int)
+                    {
                         PlayerPrefs.SetInt(key, statsData.Stats.GetStatDefualt(statTypesEnum.Int).Value);
+                    }
                     else if (stat.DataType == statTypesEnum.Float)
+                    {
                         PlayerPrefs.SetFloat(key, statsData.Stats.GetStatDefualt(statTypesEnum.Float).Value);
+                    }
             }
         }
     }

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(SceneLoader))]
 public class SetDifficulty : MonoBehaviour
 {
     [SerializeField]
@@ -8,9 +7,20 @@ public class SetDifficulty : MonoBehaviour
     [SerializeField]
     private GameDifficulty _gameDifficulty;
 
+    public static PanelManager _panelManager;
+    private static PanelManager panelManager
+    {
+        get
+        {
+            if (_panelManager == null)
+                _panelManager = FindObjectOfType<PanelManager>();
+            return _panelManager;
+        }
+    }
+
     public void StartGame()
     {
         _gameDifficulty.SetGameDifficulty(_difficulty);
-        GetComponent<SceneLoader>().LoadScene();
+        panelManager.ShowGame();
     }
 }

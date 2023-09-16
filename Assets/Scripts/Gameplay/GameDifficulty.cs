@@ -7,13 +7,20 @@ public class GameDifficulty : MonoBehaviour
 {
     [SerializeField]
     private Difficulty _difficulty;
-    public static GameDifficulty gameDifficulty;
+    public static GameDifficulty instance;
 
     // Start is called before the first frame update
     void Start()
     {
-        DontDestroyOnLoadManager.AddObj(gameObject);
-        gameDifficulty = this;
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     internal void SetGameDifficulty(Difficulty newDifficulty)
@@ -24,10 +31,5 @@ public class GameDifficulty : MonoBehaviour
     public Difficulty GetCurrentGameDifficulty()
     {
         return _difficulty;
-    }
-
-    public void DestroyOnLoad()
-    {
-        DontDestroyOnLoadManager.RemoveObj(gameObject);
     }
 }
