@@ -17,19 +17,23 @@ public class PanelManager : MonoBehaviour
     [Serializable]
     public enum Panel { Home, Game, Settings, Stats }
 
+    [Header("Managers")]
+    [SerializeField]
+    private GameManager gameManager;
+
     private void Start()
     {
         ShowPanel(Panel.Home);
     }
 
-    public void ShowPanel(Panel panelType)
+    public void ShowPanel(Panel panelType, Action onComplete = null)
     {
         foreach (PanelInfo panelInfo in panels)
         {
             if (panelInfo.panelType == panelType)
             {
                 panelInfo.panel.SetActive(true);
-                LeanTween.alphaCanvas(panelInfo.panel.GetComponent<CanvasGroup>(), 1, 0.3f).setEaseInOutSine();
+                LeanTween.alphaCanvas(panelInfo.panel.GetComponent<CanvasGroup>(), 1, 0.3f).setEaseInOutSine().setOnComplete(() => onComplete?.Invoke());
             }
             else
             {
@@ -39,7 +43,12 @@ public class PanelManager : MonoBehaviour
     }
 
     public void ShowHome() => ShowPanel(Panel.Home);
-    public void ShowGame() => ShowPanel(Panel.Game);
+    public void ShowGame()
+    {
+        GameManager.onGameReset.Invoke();
+        ShowPanel(Panel.Game, () => gameManager.StartGame());
+    }
+
     public void ShowSettings() => ShowPanel(Panel.Settings);
     public void ShowStats() => ShowPanel(Panel.Stats);
 }

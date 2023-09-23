@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Threading;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,13 +12,16 @@ public class StatRecorder : MonoBehaviour
     private TextMeshProUGUI _timer;
     [SerializeField]
     private EndGameScreen _endScreen;
+    [SerializeField]
+    private GameManager gameManager;
     private float startTime;
-    private IEnumerator gameTimer;
     private bool isTiming = false;
     private StatsData statsData;
     int numOfErrors = 0;
 
-    public static UnityEvent onIncorrectSelection = new UnityEvent();
+    public static UnityEvent onIncorrectSelection = new();
+
+    CancellationTokenSource timerTokenSource;
 
     // Start is called before the first frame update
     void Start()
@@ -49,8 +54,9 @@ public class StatRecorder : MonoBehaviour
 
     private void StartTimer()
     {
-        gameTimer = Timer();
-        StartCoroutine(gameTimer);
+        timerTokenSource = new CancellationTokenSource();
+        RunTimer(timerTokenSource.Token);
+
         isTiming = true;
     }
 
@@ -64,7 +70,7 @@ public class StatRecorder : MonoBehaviour
         //removes the time between the game actually finishing and the the starts being recorded
         float currentGameTime = Time.time - startTime - Time.deltaTime;
 
-        Difficulty gameDifficulty = GetComponent<GameManager>().GetCurrentGameDifficulty();
+        Difficulty gameDifficulty = gameManager.GetCurrentGameDifficulty();
 
         StatType bestTimeInfo = statsData.Stats.GetStatInfo(statNames.BestTime);
         StatType averageTimeInfo = statsData.Stats.GetStatInfo(statNames.AverageTime);
@@ -102,7 +108,7 @@ public class StatRecorder : MonoBehaviour
         }
         Debug.Log("Updated average time to: " + PlayerPrefs.GetFloat(averageKey));
 
-        _endScreen.ShowPanel(gameDifficulty, currentGameTime,numOfErrors);
+        _endScreen.ShowPanel(gameDifficulty, currentGameTime, numOfErrors);
     }
 
     private void StopTimer()
@@ -110,7 +116,7 @@ public class StatRecorder : MonoBehaviour
         if (isTiming)
         {
             Debug.Log("Stopping Timer");
-            StopCoroutine(gameTimer);
+            timerTokenSource?.Cancel();
         }
     }
 
@@ -118,18 +124,23 @@ public class StatRecorder : MonoBehaviour
     /// Coroutine to display the timer for the current game
     /// </summary>
     /// <returns></returns>
-    private IEnumerator Timer()
+    private async void RunTimer(CancellationToken cancellationToken)
     {
         //records the exact start time of the game
         startTime = Time.time;
 
         //the interval that the clock is updated in the ui
-        float timingInterval = 0.01f;
+        int timingInterval = 1;
         Debug.Log("Starting Timer");
         while (true)
         {
+            if(cancellationToken.IsCancellationRequested)
+            {
+                Debug.Log("Timer Cancelled");
+                return;
+            }
             _timer.text = StatManager.FormatTime(Time.time - startTime);
-            yield return new WaitForSeconds(timingInterval);
+            await Task.Delay(timingInterval);
         }
     }
 }

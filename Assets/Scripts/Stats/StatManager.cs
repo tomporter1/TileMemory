@@ -23,19 +23,15 @@ public class StatManager : MonoBehaviour
     [SerializeField]
     private Transform _statPanel;
     [SerializeField]
-    private Button _defualtButton;
-    [SerializeField]
     private TextMeshProUGUI _modeLabel;
 
     private StatsData statsData;
     public Difficulty SelectedDifficulty = Difficulty.Easy;
 
-
     void Start()
     {
         statsData = new StatsData();
-
-        _defualtButton.onClick.Invoke();
+        gameObject.SetActive(false);
     }
 
     public void SetUpStatsPanel()
@@ -54,7 +50,7 @@ public class StatManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        //populates the planel with new stat data
+        //populates the panel with new stat data
         foreach (StatType stat in statsData.Stats.StatTypes)
         {
             GameObject newStatObj = Instantiate(_statPrefab, _statPanel, false);
@@ -81,29 +77,6 @@ public class StatManager : MonoBehaviour
     /// <returns>The formatted time</returns>
     public static string FormatTime(float time)
     {
-        //int numOfSecs = (int)Math.Floor(time);
-        //int secsRemainder = numOfSecs % 60;
-        //int numOfMinutes = (numOfSecs - secsRemainder) / 60;
-        //int secFraction = (int)(Math.Round((time - numOfSecs), 2) * 100);
-
-        //string mins, secs, fract;
-        //if (numOfMinutes.ToString().Length == 1)
-        //    mins = "0" + numOfMinutes.ToString();
-        //else
-        //    mins = numOfMinutes.ToString();
-
-        //if (secsRemainder.ToString().Length == 1)
-        //    secs = "0" + secsRemainder.ToString();
-        //else
-        //    secs = secsRemainder.ToString();
-
-        //if (secFraction.ToString().Length == 1)
-        //    fract = "0" + secFraction.ToString();
-        //else
-        //    fract = secFraction.ToString();
-
-        //return mins + ":" + secs + ":" + fract;
-
         int minutes = (int)time / 60;
         int seconds = (int)time - 60 * minutes;
         int milliseconds = (int)(100 * (time - minutes * 60 - seconds));

@@ -15,7 +15,7 @@ public enum Difficulty
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _board;
+    private GameObject board;
     private List<Tile> allTiles;
 
     public static UnityEvent onGameReset = new UnityEvent();
@@ -47,7 +47,6 @@ public class GameManager : MonoBehaviour
         onGameStart.AddListener(StartGame);
         difficultySettingsData = new DifficultySettingsData();
         InitialiseStatPlayerPrefs();
-        onGameReset.Invoke();
 
         customSettingInfo = difficultySettingsData.Difficulties.CustomPlayerPref;
         if (!PlayerPrefs.HasKey(customSettingInfo.Col.Name))
@@ -58,17 +57,20 @@ public class GameManager : MonoBehaviour
         {
             PlayerPrefs.SetInt(customSettingInfo.Row.Name, customSettingInfo.Row.InitialValue);
         }
+        gameObject.SetActive(false);
+    }
 
+    public void StartGame()
+    {
         Difficulty currentGameDifficulty = GameDifficulty.instance.GetCurrentGameDifficulty();
         onGameStart.Invoke(GetDifficultyInfo(currentGameDifficulty));
     }
 
-    public void StartGame(DifficultyInfo _difficulty)
+    private void StartGame(DifficultyInfo difficulty)
     {
-        onGameReset.Invoke();
-        currentDifficulty = _difficulty;
+        currentDifficulty = difficulty;
         if (!(currentDifficulty.Name == Difficulty.Custom))
-            GetComponent<MakeGrid>().Create(new MakeGrid.GridArgs(_difficulty.XSize, _difficulty.YSize));
+            GetComponent<MakeGrid>().Create(new MakeGrid.GridArgs(difficulty.XSize, difficulty.YSize));
         else
         {
             int numOfRows = PlayerPrefs.GetInt(difficultySettingsData.Difficulties.CustomPlayerPref.Row.Name);
@@ -93,7 +95,7 @@ public class GameManager : MonoBehaviour
     {
         allTiles = new List<Tile>();
 
-        foreach (Transform tile in _board.transform)
+        foreach (Transform tile in board.transform)
         {
             Destroy(tile.gameObject);
         }
@@ -111,7 +113,7 @@ public class GameManager : MonoBehaviour
 
     private void EnableBoard()
     {
-        _board.GetComponent<ShowBoard>().ShowBoardForSecs(currentDifficulty.ShowTime);
+        board.GetComponent<ShowBoard>().ShowBoardForSecs(currentDifficulty.ShowTime);
     }
 
     internal IEnumerable<Tile> GetAllTiles()
@@ -126,7 +128,7 @@ public class GameManager : MonoBehaviour
 
     private void InitialiseStatPlayerPrefs()
     {
-        StatsData statsData = new StatsData();
+        StatsData statsData = new();
 
         foreach (StatType stat in statsData.Stats.StatTypes)
         {
@@ -134,14 +136,16 @@ public class GameManager : MonoBehaviour
             {
                 string key = StatManager.GenerateStatKey(stat, mode.ModeName);
                 if (!PlayerPrefs.HasKey(key))
+                {
                     if (stat.DataType == statTypesEnum.Int)
                     {
-                        PlayerPrefs.SetInt(key, statsData.Stats.GetStatDefualt(statTypesEnum.Int).Value);
+                        PlayerPrefs.SetInt(key, statsData.Stats.GetStatDefault(statTypesEnum.Int).Value);
                     }
                     else if (stat.DataType == statTypesEnum.Float)
                     {
-                        PlayerPrefs.SetFloat(key, statsData.Stats.GetStatDefualt(statTypesEnum.Float).Value);
+                        PlayerPrefs.SetFloat(key, statsData.Stats.GetStatDefault(statTypesEnum.Float).Value);
                     }
+                }
             }
         }
     }

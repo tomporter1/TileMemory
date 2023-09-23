@@ -27,11 +27,11 @@ public class StatsInfo
     public List<Mode> Modes { get { return modes; } }
     public List<StatDefaults> StatTypeDefaults { get { return statTypeDefaults; } }
 
-    public StatDefaults GetStatDefualt(statTypesEnum type)
+    public StatDefaults GetStatDefault(statTypesEnum type)
     {
-        foreach (StatDefaults defualtInfo in statTypeDefaults)
-            if (type == defualtInfo.Type)
-                return defualtInfo;
+        foreach (StatDefaults defaultInfo in statTypeDefaults)
+            if (type == defaultInfo.Type)
+                return defaultInfo;
         return null;
     }
 

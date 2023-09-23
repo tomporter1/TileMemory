@@ -22,6 +22,7 @@ public class EndGameScreen : MonoBehaviour
     void Awake()
     {
         GameManager.onGameReset.AddListener(HidePanel);
+        HidePanel();
     }
 
     private void HidePanel()

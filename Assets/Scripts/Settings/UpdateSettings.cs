@@ -8,9 +8,13 @@ public class UpdateSettings : MonoBehaviour
     [SerializeField]
     private Slider _rowSlider, _columnSlider;
 
+    private void Start()
+    {
+        GetComponentInParent<Canvas>().gameObject.SetActive(false);
+    }
     public void Save()
     {
-        DifficultySettingsData difficultySettingsData = new DifficultySettingsData();
+        DifficultySettingsData difficultySettingsData = new();
 
         difficultySettingsData.UpdateCustomSettings((int)_columnSlider.value, (int)_rowSlider.value);
     }
