@@ -1,22 +1,32 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 
 public class EndGameScreen : MonoBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI _time, _difficulty, _errors;
+    private CanvasGroup canvasGroup;
+    [SerializeField]
+    private TextMeshProUGUI time, difficulty, errors;
 
-    public void SetText(Difficulty difficulty, float time, int errors)
+    public void ShowPanel(Difficulty difficulty, float time, int errors)
     {
-        _difficulty.text = "Difficulty: " + difficulty.ToString();
-        _time.text = "Time: " + StatManager.FormatTime(time);
-        _errors.text = errors.ToString() + " errors";
+        this.difficulty.text = "Difficulty: " + difficulty.ToString();
+        this.time.text = "Time: " + StatManager.FormatTime(time);
+        this.errors.text = errors.ToString() + " errors";
+
         gameObject.SetActive(true);
+        LeanTween.alphaCanvas(canvasGroup, 1, 0.3f);
     }
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        GameManager.onGameReset.AddListener(HidePanel);
+    }
+
+    private void HidePanel()
+    {
+        LeanTween.alphaCanvas(canvasGroup, 0, 0);
         gameObject.SetActive(false);
     }
 }

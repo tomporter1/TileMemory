@@ -65,6 +65,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame(DifficultyInfo _difficulty)
     {
+        onGameReset.Invoke();
         currentDifficulty = _difficulty;
         if (!(currentDifficulty.Name == Difficulty.Custom))
             GetComponent<MakeGrid>().Create(new MakeGrid.GridArgs(_difficulty.XSize, _difficulty.YSize));

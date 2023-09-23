@@ -12,7 +12,7 @@ public class StatRecorder : MonoBehaviour
     private EndGameScreen _endScreen;
     private float startTime;
     private IEnumerator gameTimer;
-    private bool isTimming = false;
+    private bool isTiming = false;
     private StatsData statsData;
     int numOfErrors = 0;
 
@@ -24,7 +24,7 @@ public class StatRecorder : MonoBehaviour
         GameManager.onGameEnd.AddListener(RecordStats);
         GameManager.onGameEnd.AddListener(ClearTimer);
         GameManager.onGameReset.AddListener(ClearTimer);
-        GameManager.onGameReset.AddListener(StopTimmer);
+        GameManager.onGameReset.AddListener(StopTimer);
         GameManager.onGameReset.AddListener(ClearErrors);
         HideTiles.onTilesHide.AddListener(StartTimer);
         onIncorrectSelection.AddListener(RecordError);
@@ -51,7 +51,7 @@ public class StatRecorder : MonoBehaviour
     {
         gameTimer = Timer();
         StartCoroutine(gameTimer);
-        isTimming = true;
+        isTiming = true;
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class StatRecorder : MonoBehaviour
     /// </summary>
     private void RecordStats()
     {
-        StopTimmer();
+        StopTimer();
         //uses the recorded start time for the game to calculate how long the game tuck
         //removes the time between the game actually finishing and the the starts being recorded
         float currentGameTime = Time.time - startTime - Time.deltaTime;
@@ -102,12 +102,12 @@ public class StatRecorder : MonoBehaviour
         }
         Debug.Log("Updated average time to: " + PlayerPrefs.GetFloat(averageKey));
 
-        _endScreen.SetText(gameDifficulty, currentGameTime,numOfErrors);
+        _endScreen.ShowPanel(gameDifficulty, currentGameTime,numOfErrors);
     }
 
-    private void StopTimmer()
+    private void StopTimer()
     {
-        if (isTimming)
+        if (isTiming)
         {
             Debug.Log("Stopping Timer");
             StopCoroutine(gameTimer);
@@ -115,7 +115,7 @@ public class StatRecorder : MonoBehaviour
     }
 
     /// <summary>
-    /// Corouting to display the timer for the current game
+    /// Coroutine to display the timer for the current game
     /// </summary>
     /// <returns></returns>
     private IEnumerator Timer()
@@ -124,12 +124,12 @@ public class StatRecorder : MonoBehaviour
         startTime = Time.time;
 
         //the interval that the clock is updated in the ui
-        float timmingInterval = 0.01f;
+        float timingInterval = 0.01f;
         Debug.Log("Starting Timer");
         while (true)
         {
             _timer.text = StatManager.FormatTime(Time.time - startTime);
-            yield return new WaitForSeconds(timmingInterval);
+            yield return new WaitForSeconds(timingInterval);
         }
     }
 }
